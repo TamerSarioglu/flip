@@ -93,7 +93,7 @@ class MemoryGameViewModel {
             flippedIndices = emptySet(),
             canClick = true,
             isAnimating = false,
-            isComparing = false  // Reset comparing state
+            isComparing = false
         )
     }
 
