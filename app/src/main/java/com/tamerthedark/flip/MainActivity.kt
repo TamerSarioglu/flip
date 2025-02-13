@@ -109,11 +109,14 @@ fun MemoryGame() {
             }
 
             if (gameState.isGameOver && gameState.remainingTime == 0) {
-                Text(
-                    text = "Time's Up!",
-                    fontSize = 24.sp,
-                    color = MaterialTheme.colorScheme.error,
-                    modifier = Modifier.padding(top = 16.dp)
+                RetryDialog(
+                    score = gameState.score,
+                    onRetry = {
+                        viewModel.retryCurrentLevel()
+                    },
+                    onNewGame = {
+                        viewModel.resetGame()
+                    }
                 )
             } else if (gameState.matchedPairs.size == viewModel.cards.size) {
                 Text(

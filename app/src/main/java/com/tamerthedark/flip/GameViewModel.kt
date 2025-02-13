@@ -180,4 +180,21 @@ class MemoryGameViewModel {
             launch { rotations[secondIndex].animateTo(0f, tween(400)) }
         }
     }
+
+    fun retryCurrentLevel() {
+        val currentDifficulty = _gameState.value.selectedDifficulty
+        currentDifficulty?.let { difficulty ->
+            cards = (currentEmojis + currentEmojis).shuffled()
+            _gameState.value = GameState(
+                selectedDifficulty = difficulty,
+                remainingTime = difficulty.timeLimit
+            )
+            startTimer()
+        }
+    }
+
+    fun resetGame() {
+        timerJob?.cancel()
+        _gameState.value = GameState()
+    }
 }
