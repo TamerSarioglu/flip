@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -46,6 +47,12 @@ fun MemoryGame() {
     val scope = rememberCoroutineScope()
     val shakeOffset = remember { Animatable(0f) }
     
+    LaunchedEffect(gameState.matchedPairs.size, viewModel.cards.size) {
+        if (gameState.matchedPairs.size == viewModel.cards.size && viewModel.cards.isNotEmpty()) {
+            viewModel.onCleared()
+        }
+    }
+
     if (gameState.selectedDifficulty == null) {
         DifficultyDialog { difficulty ->
             viewModel.setDifficulty(difficulty)
@@ -78,28 +85,26 @@ fun MemoryGame() {
                 )
             }
 
-            gameState.selectedDifficulty?.let { difficulty ->
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(difficulty.gridSize),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(viewModel.cards.size) { index ->
-                        MemoryCard(
-                            card = viewModel.cards[index],
-                            rotation = rotations[index].value,
-                            isShaking = gameState.shakingCards.contains(index),
-                            shakeOffset = shakeOffset.value,
-                            enabled = !gameState.isAnimating &&
-                                    !gameState.flippedIndices.contains(index) &&
-                                    !gameState.matchedPairs.contains(index) &&
-                                    gameState.canClick &&
-                                    !gameState.isComparing,
-                            onCardClick = {
-                                viewModel.onCardClick(index, scope, rotations, shakeOffset)
-                            }
-                        )
-                    }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(gameState.selectedDifficulty!!.gridSize),
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(viewModel.cards.size) { index ->
+                    MemoryCard(
+                        card = viewModel.cards[index],
+                        rotation = rotations[index].value,
+                        isShaking = gameState.shakingCards.contains(index),
+                        shakeOffset = shakeOffset.value,
+                        enabled = !gameState.isAnimating &&
+                                !gameState.flippedIndices.contains(index) &&
+                                !gameState.matchedPairs.contains(index) &&
+                                gameState.canClick &&
+                                !gameState.isComparing,
+                        onCardClick = {
+                            viewModel.onCardClick(index, scope, rotations, shakeOffset)
+                        }
+                    )
                 }
             }
 
@@ -116,7 +121,6 @@ fun MemoryGame() {
                     fontSize = 24.sp,
                     modifier = Modifier.padding(top = 16.dp)
                 )
-                viewModel.onCleared()
             }
         }
     }
