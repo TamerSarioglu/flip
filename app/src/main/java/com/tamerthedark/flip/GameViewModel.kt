@@ -34,6 +34,9 @@ class MemoryGameViewModel {
     
     private var timerJob: Job? = null
 
+    private var savedTimeRemaining: Int = 0
+    private var wasGameRunning: Boolean = false
+
     fun setDifficulty(difficulty: DifficultyLevel) {
         currentEmojis = allEmojis.take(difficulty.iconCount)
         cards = (currentEmojis + currentEmojis).shuffled()
@@ -42,6 +45,23 @@ class MemoryGameViewModel {
             remainingTime = difficulty.timeLimit
         )
         startTimer()
+    }
+
+    fun pauseGame() {
+        if (_gameState.value.remainingTime > 0 && !_gameState.value.isGameOver) {
+            wasGameRunning = true
+            savedTimeRemaining = _gameState.value.remainingTime
+            timerJob?.cancel()
+        }
+    }
+
+    fun resumeGame() {
+        if (wasGameRunning && !_gameState.value.isGameOver) {
+            _gameState.value = _gameState.value.copy(
+                remainingTime = savedTimeRemaining
+            )
+            startTimer()
+        }
     }
 
     private fun startTimer() {
@@ -53,7 +73,6 @@ class MemoryGameViewModel {
                     remainingTime = _gameState.value.remainingTime - 1
                 )
                 
-                // Check if time's up
                 if (_gameState.value.remainingTime == 0) {
                     _gameState.value = _gameState.value.copy(
                         isGameOver = true,
