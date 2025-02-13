@@ -1,10 +1,13 @@
-package com.tamerthedark.flip
+package com.tamerthedark.flip.screens.gamescreen
 
 import DifficultyLevel
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Stable
+import androidx.lifecycle.ViewModel
+import com.tamerthedark.flip.GameState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -13,9 +16,11 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 @Stable
-class MemoryGameViewModel {
+@HiltViewModel
+class MemoryGameViewModel @Inject constructor() : ViewModel() {
     private val allEmojis = listOf(
         "🎮", "🎲", "🎯", "🎨", "🎭", "🎪", "🎫", "🎰",
         "🎸", "🎺", "🎻", "🎹", "🎼", "🎧", "🎤", "🎬",
@@ -24,14 +29,14 @@ class MemoryGameViewModel {
         "🌟", "🌙", "⭐", "☀️", "🌈", "☁️", "⚡", "❄️",
         "🌸", "🌺", "🌷", "🌹", "🌻", "🍀", "🌿", "🍃"
     )
-    
+
     private var currentEmojis: List<String> = emptyList()
     var cards: List<String> = emptyList()
         private set
 
     private val _gameState = MutableStateFlow(GameState())
     val gameState = _gameState.asStateFlow()
-    
+
     private var timerJob: Job? = null
 
     private var savedTimeRemaining: Int = 0
@@ -72,7 +77,7 @@ class MemoryGameViewModel {
                 _gameState.value = _gameState.value.copy(
                     remainingTime = _gameState.value.remainingTime - 1
                 )
-                
+
                 if (_gameState.value.remainingTime == 0) {
                     _gameState.value = _gameState.value.copy(
                         isGameOver = true,
@@ -84,7 +89,7 @@ class MemoryGameViewModel {
     }
 
     // Add cleanup method
-    fun onCleared() {
+    public override fun onCleared() {
         timerJob?.cancel()
     }
 
@@ -100,7 +105,8 @@ class MemoryGameViewModel {
             currentState.flippedIndices.contains(index) ||
             currentState.matchedPairs.contains(index) ||
             currentState.isAnimating ||
-            currentState.isComparing) return
+            currentState.isComparing
+        ) return
 
         scope.launch {
             handleCardFlip(index, currentState, rotations, shakeOffset)

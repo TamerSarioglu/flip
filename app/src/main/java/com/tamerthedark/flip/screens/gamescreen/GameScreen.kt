@@ -1,4 +1,4 @@
-package com.tamerthedark.flip.screens
+package com.tamerthedark.flip.screens.gamescreen
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.*
