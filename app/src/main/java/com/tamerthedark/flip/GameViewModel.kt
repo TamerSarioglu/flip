@@ -1,10 +1,13 @@
 package com.tamerthedark.flip
 
+import DifficultyLevel
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Stable
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,11 +16,58 @@ import kotlinx.coroutines.launch
 
 @Stable
 class MemoryGameViewModel {
-    private val emojis = listOf("🎮", "🎲", "🎯", "🎨", "🎭", "🎪", "🎫", "🎰")
-    val cards = (emojis + emojis).shuffled()
+    private val allEmojis = listOf(
+        "🎮", "🎲", "🎯", "🎨", "🎭", "🎪", "🎫", "🎰",
+        "🎸", "🎺", "🎻", "🎹", "🎼", "🎧", "🎤", "🎬",
+        "🎨", "🎭", "🎪", "🎫", "🎰", "🎲", "🎯", "🎮",
+        "🎸", "🎺", "🎻", "🎹", "🎼", "🎧", "🎤", "🎬",
+        "🌟", "🌙", "⭐", "☀️", "🌈", "☁️", "⚡", "❄️",
+        "🌸", "🌺", "🌷", "🌹", "🌻", "🍀", "🌿", "🍃"
+    )
+    
+    private var currentEmojis: List<String> = emptyList()
+    var cards: List<String> = emptyList()
+        private set
 
     private val _gameState = MutableStateFlow(GameState())
     val gameState = _gameState.asStateFlow()
+    
+    private var timerJob: Job? = null
+
+    fun setDifficulty(difficulty: DifficultyLevel) {
+        currentEmojis = allEmojis.take(difficulty.iconCount)
+        cards = (currentEmojis + currentEmojis).shuffled()
+        _gameState.value = _gameState.value.copy(
+            selectedDifficulty = difficulty,
+            remainingTime = difficulty.timeLimit
+        )
+        startTimer()
+    }
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        timerJob = CoroutineScope(Dispatchers.Main).launch {
+            while (_gameState.value.remainingTime > 0 && !_gameState.value.isGameOver) {
+                delay(1000)
+                _gameState.value = _gameState.value.copy(
+                    remainingTime = _gameState.value.remainingTime - 1
+                )
+                
+                // Check if time's up
+                if (_gameState.value.remainingTime == 0) {
+                    _gameState.value = _gameState.value.copy(
+                        isGameOver = true,
+                        canClick = false
+                    )
+                }
+            }
+        }
+    }
+
+    // Add cleanup method
+    fun onCleared() {
+        timerJob?.cancel()
+    }
 
     fun onCardClick(
         index: Int,
