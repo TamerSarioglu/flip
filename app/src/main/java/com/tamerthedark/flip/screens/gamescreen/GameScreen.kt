@@ -10,10 +10,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.tamerthedark.flip.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.tamerthedark.flip.DifficultyDialog
+import com.tamerthedark.flip.MemoryCard
+import com.tamerthedark.flip.RetryDialog
 
 @Composable
-fun GameScreen(viewModel: MemoryGameViewModel) {
+fun GameScreen() {
+    val viewModel : MemoryGameViewModel = hiltViewModel()
     val gameState by viewModel.gameState.collectAsState()
     val scope = rememberCoroutineScope()
     val shakeOffset = remember { Animatable(0f) }

@@ -78,8 +78,8 @@ class MainActivity : ComponentActivity() {
                         startDestination = Screen.Game.route,
                         modifier = Modifier.padding(innerPadding)
                     ) {
-                        composable(Screen.Game.route) { 
-                            GameScreen(viewModel = gameViewModel)
+                        composable(Screen.Game.route) {
+                            GameScreen()
                         }
                         composable(Screen.Scores.route) { ScoresScreen() }
                     }

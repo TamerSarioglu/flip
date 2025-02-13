@@ -1,11 +1,11 @@
 package com.tamerthedark.flip.screens.gamescreen
 
-import DifficultyLevel
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.AnimationVector1D
 import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Stable
 import androidx.lifecycle.ViewModel
+import com.tamerthedark.flip.DifficultyLevel
 import com.tamerthedark.flip.GameState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineScope
