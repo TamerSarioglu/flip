@@ -1,4 +1,4 @@
-package com.tamerthedark.flip.navigation
+package com.tamerthedark.flip.presentation.navigation
 
 sealed class Screen(val route: String) {
     data object Game : Screen("game")

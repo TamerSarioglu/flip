@@ -1,4 +1,4 @@
-package com.tamerthedark.flip
+package com.tamerthedark.flip.presentation.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box

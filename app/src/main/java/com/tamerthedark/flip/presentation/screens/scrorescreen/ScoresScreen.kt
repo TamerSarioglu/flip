@@ -1,4 +1,4 @@
-package com.tamerthedark.flip.screens.scrorescreen
+package com.tamerthedark.flip.presentation.screens.scrorescreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
