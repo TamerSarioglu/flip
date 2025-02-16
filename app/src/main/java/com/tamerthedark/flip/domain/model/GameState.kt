@@ -1,4 +1,4 @@
-package com.tamerthedark.flip
+package com.tamerthedark.flip.domain.model
 
 data class GameState(
     val score: Int = 0,
@@ -10,5 +10,6 @@ data class GameState(
     val isComparing: Boolean = false,
     val selectedDifficulty: DifficultyLevel? = null,
     val remainingTime: Int = 0,
-    val isGameOver: Boolean = false
-)
+    val isGameOver: Boolean = false,
+    val currentDialog: DialogType = DialogType.None
+) 

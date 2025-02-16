@@ -1,4 +1,4 @@
-package com.tamerthedark.flip
+package com.tamerthedark.flip.domain.model
 
 data class DifficultyLevel(
     val name: String,

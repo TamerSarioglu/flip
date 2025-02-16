@@ -19,16 +19,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.tamerthedark.flip.navigation.Screen
-import com.tamerthedark.flip.screens.gamescreen.GameScreen
-import com.tamerthedark.flip.screens.gamescreen.MemoryGameViewModel
-import com.tamerthedark.flip.screens.scrorescreen.ScoresScreen
+import com.tamerthedark.flip.presentation.navigation.Screen
+import com.tamerthedark.flip.presentation.screens.gamescreen.GameScreen
+import com.tamerthedark.flip.presentation.screens.gamescreen.MemoryGameViewModel
+import com.tamerthedark.flip.presentation.screens.scrorescreen.ScoresScreen
 import com.tamerthedark.flip.ui.theme.FlipTheme
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-    private val gameViewModel = MemoryGameViewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,11 +85,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        gameViewModel.onCleared()
     }
 }
 

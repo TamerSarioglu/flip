@@ -1,4 +1,4 @@
-package com.tamerthedark.flip
+package com.tamerthedark.flip.presentation.components.dialogs
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*

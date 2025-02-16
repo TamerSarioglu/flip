@@ -1,4 +1,4 @@
-package com.tamerthedark.flip.screens.gamescreen
+package com.tamerthedark.flip.presentation.screens.gamescreen
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.foundation.layout.*
@@ -11,9 +11,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.tamerthedark.flip.DifficultyDialog
-import com.tamerthedark.flip.MemoryCard
-import com.tamerthedark.flip.RetryDialog
+import com.tamerthedark.flip.presentation.components.dialogs.DifficultyDialog
+import com.tamerthedark.flip.presentation.components.MemoryCard
+import com.tamerthedark.flip.presentation.components.dialogs.RetryDialog
+import com.tamerthedark.flip.presentation.components.dialogs.WinDialog
+import com.tamerthedark.flip.domain.model.DialogType
 
 @Composable
 fun GameScreen() {
@@ -24,11 +26,10 @@ fun GameScreen() {
     
     LaunchedEffect(gameState.matchedPairs.size, viewModel.cards.size) {
         if (gameState.matchedPairs.size == viewModel.cards.size && viewModel.cards.isNotEmpty()) {
-            viewModel.onCleared()
+            viewModel.onGameCompleted()
         }
     }
 
-    // Add effect to handle screen focus
     DisposableEffect(Unit) {
         onDispose {
             viewModel.pauseGame()
@@ -39,11 +40,40 @@ fun GameScreen() {
         viewModel.resumeGame()
     }
 
-    if (gameState.selectedDifficulty == null) {
-        DifficultyDialog { difficulty ->
-            viewModel.setDifficulty(difficulty)
+    when (gameState.currentDialog) {
+        is DialogType.Difficulty -> {
+            DifficultyDialog { difficulty ->
+                viewModel.setDifficulty(difficulty)
+            }
         }
-    } else {
+        is DialogType.Retry -> {
+            RetryDialog(
+                score = gameState.score,
+                onRetry = {
+                    viewModel.retryCurrentLevel()
+                },
+                onNewGame = {
+                    viewModel.resetGame()
+                }
+            )
+        }
+        is DialogType.Win -> {
+            WinDialog(
+                score = gameState.score,
+                onRetry = {
+                    viewModel.retryCurrentLevel()
+                },
+                onNewGame = {
+                    viewModel.resetGame()
+                }
+            )
+        }
+        is DialogType.None -> {
+            // No dialog shown
+        }
+    }
+
+    if (gameState.selectedDifficulty != null) {
         val rotations = remember(viewModel.cards) {
             List(viewModel.cards.size) { Animatable(0f) }
         }
@@ -92,24 +122,6 @@ fun GameScreen() {
                         }
                     )
                 }
-            }
-
-            if (gameState.isGameOver && gameState.remainingTime == 0) {
-                RetryDialog(
-                    score = gameState.score,
-                    onRetry = {
-                        viewModel.retryCurrentLevel()
-                    },
-                    onNewGame = {
-                        viewModel.resetGame()
-                    }
-                )
-            } else if (gameState.matchedPairs.size == viewModel.cards.size) {
-                Text(
-                    text = "Congratulations! You won!",
-                    fontSize = 24.sp,
-                    modifier = Modifier.padding(top = 16.dp)
-                )
             }
         }
     }
