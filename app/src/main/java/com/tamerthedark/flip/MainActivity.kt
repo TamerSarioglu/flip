@@ -21,8 +21,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.tamerthedark.flip.presentation.navigation.Screen
 import com.tamerthedark.flip.presentation.screens.gamescreen.GameScreen
-import com.tamerthedark.flip.presentation.screens.gamescreen.MemoryGameViewModel
-import com.tamerthedark.flip.presentation.screens.scrorescreen.ScoresScreen
+import com.tamerthedark.flip.presentation.screens.savedscorescreen.ScoresScreen
 import com.tamerthedark.flip.ui.theme.FlipTheme
 import dagger.hilt.android.AndroidEntryPoint
 
